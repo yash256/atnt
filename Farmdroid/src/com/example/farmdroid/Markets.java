@@ -9,13 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 
@@ -35,7 +31,6 @@ public class Markets extends ListActivity {
 		ListAdapter adapter=new SimpleCursorAdapter(this, R.layout.activity_markets, c, new String[]{"Name", "address", "market_id"}, new int[]{R.id.marketname, R.id.address, R.id.marketID});
 		this.setListAdapter(adapter);
 		c=null;
-		ListView marketsLV=(ListView) findViewById(android.R.id.list);
 
 		//Cursor y=db.getReviews(1);
 		//Log.d(TAG,y.getString(1)+" "+y.getString(0));

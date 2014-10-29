@@ -1,6 +1,17 @@
 package com.example.farmdroid;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -11,21 +22,57 @@ public class MarketsDB {
 	protected static SQLiteDatabase db;
 	
 	public MarketsDB(Context ctx){
+		boolean dbExists = false;
+		try {
+			FileInputStream fis = ctx.openFileInput("databaseExists");
+			dbExists = true;
+			fis.close();
+		} catch (FileNotFoundException e) {
+			dbExists = false;
+		} catch (IOException e) {
+		}
+		Log.d(TAG, "DbExists" + dbExists);
 		db = ctx.openOrCreateDatabase("MarketsDB", Markets.MODE_PRIVATE, null);
-        db.execSQL("	DROP TABLE IF EXISTS `day_of_week`;");
-        db.execSQL("    CREATE TABLE IF NOT EXISTS `day_of_week` (`day_id` int(11) NOT NULL PRIMARY KEY, `day_name` varchar(20) NOT NULL);	");
-        db.execSQL("	INSERT INTO `day_of_week` (`day_id`, `day_name`) VALUES (1, 'Sunday'), (2, 'Monday'), (3, 'Tuesday'), (4, 'Wednesday'), (5, 'Thursday'), (6, 'Friday'), (7, 'Saturday');	");
-        db.execSQL("	DROP TABLE IF EXISTS `location_city`;");
-        db.execSQL("	CREATE TABLE IF NOT EXISTS `location_city` ( `location_id` int(11) NOT NULL PRIMARY KEY,   `name` varchar(30) NOT NULL ) ;	");
-        db.execSQL("	DROP TABLE IF EXISTS `market`;");
-        db.execSQL("	CREATE TABLE IF NOT EXISTS `market` (`market_id` int(11) NOT NULL PRIMARY KEY, `Name` varchar(100) NOT NULL DEFAULT '',  `location_id` int(11) NOT NULL, `address` VARCHAR(100) NOT NULL, `from_time` VARCHAR(5) DEFAULT NULL, `to_time` VARCHAR(5) DEFAULT NULL, `from_date` int(11) DEFAULT NULL, `to_date` int(11) DEFAULT NULL, `day_of_operation` int(11) DEFAULT NULL )   ;	");
-        db.execSQL("	DROP TABLE IF EXISTS `review`;");
-        db.execSQL("	CREATE TABLE IF NOT EXISTS `review` (`review_id` int(11) NOT NULL PRIMARY KEY, `market_id` int(11) NOT NULL, `user_id` int(11) NOT NULL, `rating` int(11) NOT NULL, `review_text` varchar(1024) NOT NULL, `review_date` date NOT NULL ) ;	");
-        db.execSQL("	DROP TABLE IF EXISTS `user`;");
-        db.execSQL("	CREATE TABLE IF NOT EXISTS `user` ( `user_id` varchar(20) NOT NULL PRIMARY KEY, `user_name` varchar(100) NOT NULL, `user_email` varchar(100) NOT NULL );	");
-        //db.execSQL("TRUNCATE TABLE `market`;");
-        db.execSQL("	INSERT INTO `market` (`market_id`, `Name`, `location_id`, `address`) VALUES (1, 'Erie1', 123, '123erie'), (2, 'Erie2', 246, '246erie'), (3, 'Erie3', 369, '369erie');	 ");
-        db.execSQL("	INSERT INTO `review` (`review_id`, `market_id`, `user_id`,`rating`, `review_text`, `review_date`) VALUES  (1,1,'yash',3,'et tu brute','2014-10-1'), (2,1,'ladde',2,'ooo la la', '2014-10-9')		;");
+		try {
+			FileOutputStream fos = ctx.openFileOutput("databaseExists", Context.MODE_PRIVATE);
+			Log.d(TAG,"Opened File");
+			fos.close();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+		
+		if (!dbExists) {
+			List<String> sqls = new ArrayList<String>();
+	        AssetManager assetManager = ctx.getAssets();
+	        try {
+				String[] files = assetManager.list("db");
+				if (files.length > 0) {
+					Log.d(TAG,"If");
+					InputStream one = assetManager.open("db/marketsDatabase.txt");
+						InputStreamReader two = new InputStreamReader(one);
+						BufferedReader dbfile = new BufferedReader(two);
+						String line = null;
+						int i = 0;
+						while((line = dbfile.readLine()) != null) {
+							sqls.add(i++, line);
+						}
+						
+						
+				}
+			} catch (IOException e) {
+				Log.d(TAG,"db folder not found in assetmanager");
+			}
+	        
+			//sqls = {"	DROP TABLE IF EXISTS `day_of_week`; "," CREATE TABLE IF NOT EXISTS `day_of_week` (`day_id` int(11) NOT NULL PRIMARY KEY, `day_name` varchar(20) NOT NULL);	" , "INSERT INTO `day_of_week` (`day_id`, `day_name`) VALUES (1, 'Sunday'), (2, 'Monday'), (3, 'Tuesday'), (4, 'Wednesday'), (5, 'Thursday'), (6, 'Friday'), (7, 'Saturday'); "," CREATE TABLE IF NOT EXISTS `location_city` ( `location_id` int(11) NOT NULL PRIMARY KEY,   `name` varchar(30) NOT NULL ) ; ", "	CREATE TABLE IF NOT EXISTS `market` (`market_id` int(11) NOT NULL PRIMARY KEY, `Name` varchar(100) NOT NULL DEFAULT '',  `location_id` int(11) NOT NULL, `address` VARCHAR(100) NOT NULL, `from_time` VARCHAR(5) DEFAULT NULL, `to_time` VARCHAR(5) DEFAULT NULL, `from_date` int(11) DEFAULT NULL, `to_date` int(11) DEFAULT NULL, `day_of_operation` int(11) DEFAULT NULL )   ; "," CREATE TABLE IF NOT EXISTS `review` (`review_id` int(11) NOT NULL PRIMARY KEY, `market_id` int(11) NOT NULL, `user_id` int(11) NOT NULL, `rating` int(11) NOT NULL, `review_text` varchar(1024) NOT NULL, `review_date` date NOT NULL ) ;  ", " CREATE TABLE IF NOT EXISTS `user` ( `user_id` varchar(20) NOT NULL PRIMARY KEY, `user_name` varchar(100) NOT NULL, `user_email` varchar(100) NOT NULL );	"};
+
+			for(String sql :sqls) {
+//				Log.d(TAG,sql);
+				db.execSQL(sql);
+			}			
+		} 
+		
+		
+/*
         Cursor c = db.rawQuery("SELECT * FROM sqlite_master", null);
         if(c.moveToFirst()) {
         	
@@ -50,6 +97,7 @@ public class MarketsDB {
         	while (c.moveToNext())
         		Log.d("Dayofweek", c.getString(0));
         }
+*/
 	}
 	
 	public Cursor getMarkets(){
