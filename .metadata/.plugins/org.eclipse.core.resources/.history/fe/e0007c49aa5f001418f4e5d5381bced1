@@ -33,7 +33,7 @@ public class Details extends ListActivity {
 		marketAddressTV.setText(market_address);
 		RatingBar rating=(RatingBar) findViewById(R.id.ratingBar1);
 		rating.setRating((float) 4.00);
-		Cursor reviews=MarketsDB.getReviews(marketID);
+		Cursor reviews=MarketsDB.getReviews(1);
 		Log.d("cursorblah","size of cursor= "+ reviews.getCount());
 		@SuppressWarnings("deprecation")
 		ListAdapter adapter=new SimpleCursorAdapter(this, R.layout.listview_reviews, reviews, new String[]{"user_id", "review_text"}, new int[]{R.id.user_name, R.id.user_text});

@@ -65,8 +65,7 @@ public class Markets extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 	   
 		SQLiteCursor cur=(SQLiteCursor) getListAdapter().getItem(position);
-		Log.d(TAG,"size of cur"+cur.getCount());
-		int  market_id=cur.getInt(cur.getColumnIndex("market_id"));
+		String  market_id=cur.getString(cur.getColumnIndex("market_id"));
 		Intent intent = new Intent(this, Details.class);
 		intent.putExtra("marketID", market_id);
 		startActivity(intent);
