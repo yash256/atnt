@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class MarketsDB {
 	private final static String TAG="MarketsDB";
-	SQLiteDatabase db;
+	protected static SQLiteDatabase db;
 	
 	public MarketsDB(Context ctx){
 		db = ctx.openOrCreateDatabase("MarketsDB", Markets.MODE_PRIVATE, null);
@@ -21,6 +21,7 @@ public class MarketsDB {
         db.execSQL("	CREATE TABLE IF NOT EXISTS `user` ( `user_id` varchar(20) NOT NULL PRIMARY KEY, `user_name` varchar(100) NOT NULL, `user_email` varchar(100) NOT NULL );	");
         //db.execSQL("TRUNCATE TABLE `market`;");
         db.execSQL("	INSERT INTO `market` (`market_id`, `Name`, `location_id`, `address`) VALUES (1, 'Erie1', 123, '123erie'), (2, 'Erie2', 246, '246erie'), (3, 'Erie3', 369, '369erie');	 ");
+        db.execSQL("	INSERT INTO `review` (`review_id`, `market_id`, `user_id`,`rating`, `review_text`, `review_date`) VALUES  (1,1,'yash',3,'et tu brute','2014-10-1'), (2,1,'ladde',2,'ooo la la', '2014-10-9')		;");
         Cursor c = db.rawQuery("SELECT * FROM sqlite_master", null);
         if(c.moveToFirst()) {
         	
@@ -51,6 +52,18 @@ public class MarketsDB {
 		Cursor c=db.rawQuery("SELECT rowid _id, * FROM market",null);
 		Log.d("TAG","no of markets="+c.getCount());
 		return c;
+	}
+	
+	public static Cursor getMarketByID(int id){
+		Cursor c=db.rawQuery("SELECT Name, address from market where market_id=" + id + ";",null);
+		return c;
+	}
+	
+	public static Cursor getReviews(int id){
+		Cursor c=db.rawQuery("SELECT rowid _id,user_id, rating, review_text from review where market_id="+id+";",null);
+		
+		return c;
+		
 	}
 
 }

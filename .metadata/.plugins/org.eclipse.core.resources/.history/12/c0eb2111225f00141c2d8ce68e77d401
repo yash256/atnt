@@ -1,0 +1,21 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+   	android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content""
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.farmdroid.Details" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_name"
+        android:text="@dimen/market_name" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_text" 
+        android:text="@dimen/address_size"/>
+
+</RelativeLayout>

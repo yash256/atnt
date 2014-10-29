@@ -14,5 +14,12 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/address" />
+        android:id="@+id/address" 
+        android:text="@dimen/address_size"/>
+    
+        <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:id="@+id/marketID" />
 </LinearLayout>

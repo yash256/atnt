@@ -3,7 +3,7 @@
     android:layout_height="fill_parent" >
 <TableRow>
         <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/market_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="70dp"

@@ -7,5 +7,6 @@
     <string name="username">username</string>
     <string name="rating">Rating</string>
     <string name="review_text">review text</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
