@@ -52,7 +52,7 @@ public class Review extends Activity {
             @Override
             public void onClick(View arg0) {
  
-                new HttpAsyncTask().execute("http://72.231.223.67/service.php");
+                new HttpAsyncTask().execute("http://72.231.223.67:48000/service.php");
  
             }
         });
