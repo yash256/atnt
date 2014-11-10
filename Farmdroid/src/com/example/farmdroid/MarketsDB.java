@@ -176,8 +176,9 @@ public class MarketsDB {
         	if (user_uid == null || user_uid.equals("")) {
         		user_uid = "0";
         	}
-        	Cursor markets = db.rawQuery("SELECT MAX(market_id) AS market_id FROM market;", null);
-        	String marketid = markets.getString(markets.getColumnIndex("market_id"));
+        	Cursor markets = db.rawQuery("SELECT MAX(market_id) AS marketid FROM market;", null);
+        	markets.moveToFirst();
+        	int marketid = markets.getInt(markets.getColumnIndex("marketid"));
         	JSONObject jsonobj = new JSONObject();
             try {
             	
@@ -283,11 +284,11 @@ public class MarketsDB {
                     Log.d(TAG,"Market " + i + "   " + market.toString());
                     
                     ContentValues iv = new ContentValues();
-                    iv.put("market_id", market.getInt("itemid"));
-                    iv.put("Name", market.getInt("Name"));
-                    iv.put("location_id", market.getString("location_id"));
-                    iv.put("address", market.getInt("address"));
-                    iv.put("from_date", market.getInt("from_date"));
+                    iv.put("market_id", market.getInt("market_id"));
+                    iv.put("Name", market.getString("Name"));
+                    iv.put("location_id", market.getInt("location_id"));
+                    iv.put("address", market.getString("address"));
+                    iv.put("from_date", market.getString("from_date"));
                     iv.put("to_date", market.getString("to_date"));
                     iv.put("from_time", market.getString("from_time"));
                     iv.put("to_time", market.getString("to_time"));
