@@ -176,11 +176,14 @@ public class MarketsDB {
         	if (user_uid == null || user_uid.equals("")) {
         		user_uid = "0";
         	}
+        	Cursor markets = db.rawQuery("SELECT MAX(market_id) AS market_id FROM market;", null);
+        	String marketid = markets.getString(markets.getColumnIndex("market_id"));
         	JSONObject jsonobj = new JSONObject();
             try {
             	
             	jsonobj.put("user_uid", user_uid);
                 jsonobj.put("lastupdate", lastupdate);
+                jsonobj.put("market_id", marketid);
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -225,6 +228,7 @@ public class MarketsDB {
             
             try {
                 JSONObject jobj = new JSONObject(jsonString);
+                
                 JSONArray reviewsObj = (JSONArray) jobj.get("reviews");
                 int noOfReviews = reviewsObj.length();
                 Log.d(TAG,"Reviews " + noOfReviews);
@@ -266,6 +270,34 @@ public class MarketsDB {
 	                    	return;
 	                    } else {
 	                    	Log.d(TAG,"Inserted " + iv.get("user_uid") + ":" + iv.get("item_name"));
+	                    }
+                    } catch (SQLiteConstraintException e) {
+                    	
+                    }
+                }
+                JSONArray marketsObj = (JSONArray) jobj.get("markets");
+                int noOfMarkets = marketsObj.length();
+                Log.d(TAG,"Markets " + noOfMarkets);
+                for (int i = 0; i < noOfMarkets; i++) {
+                	JSONObject market = marketsObj.getJSONObject(i);
+                    Log.d(TAG,"Market " + i + "   " + market.toString());
+                    
+                    ContentValues iv = new ContentValues();
+                    iv.put("market_id", market.getInt("itemid"));
+                    iv.put("Name", market.getInt("Name"));
+                    iv.put("location_id", market.getString("location_id"));
+                    iv.put("address", market.getInt("address"));
+                    iv.put("from_date", market.getInt("from_date"));
+                    iv.put("to_date", market.getString("to_date"));
+                    iv.put("from_time", market.getString("from_time"));
+                    iv.put("to_time", market.getString("to_time"));
+                    iv.put("day_of_operation", market.getInt("day_of_operation"));
+                    try {
+	                    if (db.insertWithOnConflict("market", null, iv, SQLiteDatabase.CONFLICT_REPLACE) == -1) {
+	                    	Log.e(TAG, "Error occured while inserting " + i + "th row " + market.toString());
+	                    	return;
+	                    } else {
+	                    	Log.d(TAG,"Inserted " + iv.get("market_id") + ":" + iv.get("Name"));
 	                    }
                     } catch (SQLiteConstraintException e) {
                     	
