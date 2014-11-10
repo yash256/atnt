@@ -9,7 +9,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/marketname"
-        android:text="@dimen/market_name" />
+        android:text="@dimen/market_name" 
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_width="fill_parent"

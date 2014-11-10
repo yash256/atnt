@@ -27,7 +27,7 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080010;
+        public static final int action_settings=0x7f080012;
         public static final int address=0x7f080001;
         public static final int button1=0x7f080009;
         public static final int editText1=0x7f080004;
@@ -39,8 +39,10 @@ public final class R {
         public static final int market_name=0x7f080003;
         public static final int marketname=0x7f080000;
         public static final int ratingBar1=0x7f08000e;
+        public static final int reviews_header=0x7f080011;
         public static final int textView2=0x7f080005;
         public static final int textView3=0x7f080007;
+        public static final int top_items=0x7f080010;
         public static final int top_items_header=0x7f08000f;
         public static final int user_name=0x7f08000a;
         public static final int user_text=0x7f08000b;
@@ -63,7 +65,9 @@ public final class R {
         public static final int hello_world=0x7f050001;
         public static final int rating=0x7f050004;
         public static final int review_text=0x7f050005;
+        public static final int reviews_header=0x7f050008;
         public static final int title_activity_main=0x7f050006;
+        public static final int top_items_header_text=0x7f050007;
         public static final int username=0x7f050003;
     }
     public static final class style {

@@ -8,5 +8,7 @@
     <string name="rating">Rating</string>
     <string name="review_text">review text</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="top_items_header_text">Best known for</string>
+    <string name="reviews_header">Reviews</string>
 
 </resources>

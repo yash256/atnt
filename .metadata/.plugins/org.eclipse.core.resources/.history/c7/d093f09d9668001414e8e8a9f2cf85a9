@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+   android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.example.farmdroid.Details" >
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@dimen/market_name"
+        android:textStyle="1" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/user_text" 
+        android:text="@dimen/address_size"/>
+
+</LinearLayout>

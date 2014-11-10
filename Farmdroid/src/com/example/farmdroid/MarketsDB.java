@@ -87,7 +87,8 @@ public class MarketsDB {
 			FileOutputStream fos;
 			try {
 				fos = ctx.openFileOutput("lastupdate", Context.MODE_PRIVATE);
-				Timestamp lastupdate = new Timestamp((Calendar.getInstance()).getTime().getTime());
+				Timestamp lastupdate = new Timestamp(2000);
+				//Timestamp lastupdate = new Timestamp((Calendar.getInstance()).getTime().getTime());
 	    		OutputStreamWriter osw = new OutputStreamWriter(fos);
 	    		osw.write(lastupdate.toString());
 	    		osw.close();
@@ -121,6 +122,24 @@ public class MarketsDB {
 		
 	}
 	
+	public static Cursor getItemsByMarketId(int id){
+		String itemsQuery="SELECT item_name, count(item_name) as item_count from item where market_id="+id+ " group by item_name;";
+		Cursor c=db.rawQuery(itemsQuery, null);
+		Log.d(TAG,itemsQuery);
+		Log.d(TAG, ""+c.getCount());
+		return c;
+	}
+	
+	public static double getRatingByMarketId(int id){
+		Cursor c=db.rawQuery("SELECT rating from reviews where market_id="+id+";", null);
+		double rating= 0.0;
+		while(c.moveToNext()){
+			double rate=c.getFloat(c.getColumnIndex("rating"));
+			rating+=rate;
+		}
+		return rating/c.getCount();
+	}
+	
 	public void updateDatabase() {
 		Log.d(TAG, "Update Database");
 		new HttpAsyncTask().execute("http://72.231.223.67:48000/fetchDbUpdate.php");
@@ -129,7 +148,7 @@ public class MarketsDB {
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-        	String lastupdate = "";
+        	String lastupdate = new Timestamp(0).toString();
         	try {
 				FileInputStream fis = context.openFileInput("lastupdate");
 				InputStreamReader isr = new InputStreamReader(fis);
@@ -210,16 +229,16 @@ public class MarketsDB {
                 int noOfItems = itemsObj.length();
                 Log.d(TAG,"Items " + noOfItems);
                 for (int i = 0; i < noOfItems; i++) {
-                	JSONObject item = reviewsObj.getJSONObject(i);
+                	JSONObject item = itemsObj.getJSONObject(i);
                     Log.d(TAG,"Item " + i + "   " + item.toString());
                     
                     ContentValues iv = new ContentValues();
-                    iv.put("item_id", item.getInt("item_id"));
-                    iv.put("market_id", item.getInt("market_id"));
-                    iv.put("item_name", item.getString("item_name"));
-                    iv.put("user_id", item.getInt("user_id"));
+                    iv.put("item_id", item.getInt("itemid"));
+                    iv.put("market_id", item.getInt("marketid"));
+                    iv.put("item_name", item.getString("name"));
+                    iv.put("user_id", item.getString("user_id"));
                     iv.put("last_updated", item.getString("last_updated"));
-                    if (db.insert("review", null, iv) == -1) {
+                    if (db.insert("item", null, iv) == -1) {
                     	Log.e(TAG, "Error occured while inserting " + i + "th row " + item.toString());
                     	return;
                     } else {
