@@ -1,17 +1,21 @@
 package com.example.farmdroid;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 
 
@@ -28,12 +32,9 @@ public class Markets extends ListActivity {
 		Log.d(TAG, "before getMarkets");
 		Cursor c=db.getMarkets();
 		@SuppressWarnings("deprecation")
-		ListAdapter adapter=new SimpleCursorAdapter(this, R.layout.activity_markets, c, new String[]{"Name", "address", "market_id"}, new int[]{R.id.marketname, R.id.address, R.id.marketID});
+		MyCursorAdapter adapter=new MyCursorAdapter(this, R.layout.activity_markets, c, new String[]{"Name", "address", "market_id"}, new int[]{R.id.marketname, R.id.address, R.id.marketID});
+		//ListAdapter adapter=new SimpleCursorAdapter(this, R.layout.activity_markets, c, new String[]{"Name", "address", "market_id"}, new int[]{R.id.marketname, R.id.address, R.id.marketID});
 		this.setListAdapter(adapter);
-		c=null;
-
-		//Cursor y=db.getReviews(1);
-		//Log.d(TAG,y.getString(1)+" "+y.getString(0));
 		
 	}
 
@@ -67,4 +68,30 @@ public class Markets extends ListActivity {
 		startActivity(intent);
 		
 	  }
+	
+}
+
+class MyCursorAdapter extends SimpleCursorAdapter{
+
+	@SuppressWarnings("deprecation")
+	public MyCursorAdapter(Context context, int layout, Cursor c,
+			String[] from, int[] to) {
+		super(context, layout, c, from, to);
+		
+	}
+	 @Override 
+	  public View getView(int position, View convertView, ViewGroup parent) { 
+	 
+	   //get reference to the row
+	   View view = super.getView(position, convertView, parent);
+	   //check for odd or even to set alternate colors to the row background
+	   if(position % 2 == 0){ 
+		   
+	    view.setBackgroundColor(Color.rgb(238, 233, 233));
+	   }
+	   else {
+	    view.setBackgroundColor(Color.rgb(255, 255, 255));
+	   }
+	   return view; 
+	  }  
 }

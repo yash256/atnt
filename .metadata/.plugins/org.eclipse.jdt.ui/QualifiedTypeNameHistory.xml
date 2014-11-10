@@ -2,17 +2,23 @@
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="android.content.Context"/>
 <fullyQualifiedTypeName name="android.widget.ListAdapter"/>
-<fullyQualifiedTypeName name="android.widget.SimpleCursorAdapter"/>
 <fullyQualifiedTypeName name="com.example.farmdroid.R"/>
 <fullyQualifiedTypeName name="com.example.farmdroid.R.layout"/>
 <fullyQualifiedTypeName name="android.app.ListActivity"/>
 <fullyQualifiedTypeName name="android.database.sqlite.SQLiteDatabase"/>
 <fullyQualifiedTypeName name="android.database.Cursor"/>
-<fullyQualifiedTypeName name="android.widget.TextView"/>
 <fullyQualifiedTypeName name="android.graphics.RadialGradient"/>
 <fullyQualifiedTypeName name="com.example.farmdroid.R.id"/>
 <fullyQualifiedTypeName name="android.widget.RatingBar"/>
 <fullyQualifiedTypeName name="com.example.farmdroid.MarketsDB"/>
 <fullyQualifiedTypeName name="android.content.Intent"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.widget.LinearLayout"/>
+<fullyQualifiedTypeName name="android.app.ActionBar.LayoutParams"/>
+<fullyQualifiedTypeName name="android.widget.Button"/>
+<fullyQualifiedTypeName name="android.view.ViewGroup"/>
+<fullyQualifiedTypeName name="android.widget.SimpleCursorAdapter"/>
+<fullyQualifiedTypeName name="android.graphics.Color"/>
+<fullyQualifiedTypeName name="com.example.farmdroid.MyCursorAdapter"/>
+<fullyQualifiedTypeName name="android.widget.TextView"/>
 </qualifiedTypeNameHistroy>

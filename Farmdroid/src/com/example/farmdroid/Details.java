@@ -1,11 +1,28 @@
 package com.example.farmdroid;
 
 
+import java.io.BufferedReader;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.ActionBar.LayoutParams;
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.RadialGradient;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +35,7 @@ import android.widget.ListAdapter;
 import android.widget.RatingBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Details extends ListActivity {
 	int marketID;
@@ -51,6 +69,7 @@ public class Details extends ListActivity {
         @SuppressWarnings("deprecation")
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
+        if(items.getCount()>0){
         while(items.moveToNext()){
         	
         	String item=items.getString(items.getColumnIndex("item_name"));
@@ -63,12 +82,35 @@ public class Details extends ListActivity {
         		 
                 @Override
                 public void onClick(View arg0) {
-     
-                    Log.d("DETAILS","items,count"+b.getText());
+                	String btnText=(String) b.getText();
+                	String data[]=((String) b.getText()).split(" ");
+                	String item_name="";
+                	
+                	
+                	int count=Integer.parseInt(data[data.length-1]);
+                	int splitpoint=btnText.indexOf(""+count);
+                	item_name=btnText.substring(0,splitpoint-1);
+/*                	boolean recordexists=MarketsDB.userRecommendedItem(marketID, item_name);
+                	if(recordexists){
+                		MarketsDB.deleteRecommendation(marketID, item_name);
+                	}
+                	else{
+                		MarketsDB.createRecommendation(marketID, item_name);
+                	}
+*/                		
+                	Log.d("DETAILS", "Item_name" + item_name);
+                	new HttpAsyncTask().execute("http://72.231.223.67:48000/addItem.php", item_name);
+                	Log.d("DETAILS","items,count"+b.getText());
      
                 }
             });
         	topsItemsLayout.addView(b);
+        }
+        }
+        else{
+        	TextView noItems=new TextView(this);
+        	noItems.setText("No items to show");
+        	topsItemsLayout.addView(noItems);
         }
 	}
 
@@ -109,4 +151,74 @@ public class Details extends ListActivity {
      
         }
 	}*/
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+        	Log.d("DETAILS", "urls[1]" + urls[1]);
+        	String item_name = urls[1];
+        	
+            JSONObject jsonobj = new JSONObject();
+            try {
+            	jsonobj.put("market_id", marketID);
+            	jsonobj.put("item_name", item_name);
+            	jsonobj.put("user_uid", MarketsDB.getUserUid());
+            } catch (JSONException e) {
+
+                e.printStackTrace();
+            }
+            Log.d("DETAILS", "Sending json" + jsonobj.toString());
+            sendPostData(urls[0],jsonobj);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+       }
+    }
+
+  public void sendPostData(String url, JSONObject jsonobj)
+  {
+
+        try {
+
+            String json = jsonobj.toString();
+            StringEntity se = new StringEntity(json);
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(url);
+            httppost.setEntity(se);
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            InputStream inputstream = entity.getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+            String line="";
+            StringBuilder sb = new StringBuilder();
+
+            while((line = reader.readLine()) != null)
+            {
+                sb.append(line);
+            }
+
+            String jsonString = sb.toString();
+            Log.d("DETAILS",jsonString);
+            String result = null;
+            try {
+                JSONObject jobj = new JSONObject(jsonString);
+                result = jobj.getString("success");
+                Log.d("RESPONSE", result);
+
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+  }
+
 }

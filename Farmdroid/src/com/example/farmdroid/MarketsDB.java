@@ -143,6 +143,14 @@ public class MarketsDB {
 		return rating/c.getCount();
 	}
 	
+	public static boolean userRecommendedItem(int id, String item_name){
+		Cursor c=db.rawQuery("SELECT * from item where market_id="+id+", item_name= "+item_name+", user_uid="+MarketsDB.user_uid+";",null);
+		if(c.getCount()==0)
+			return false;
+		else
+			return true;
+	}
+	
 	public void updateDatabase() {
 		Log.d(TAG, "Update Database");
 		new HttpAsyncTask().execute("http://72.231.223.67:48000/fetchDbUpdate.php");
@@ -248,13 +256,14 @@ public class MarketsDB {
                     iv.put("item_id", item.getInt("itemid"));
                     iv.put("market_id", item.getInt("marketid"));
                     iv.put("item_name", item.getString("name"));
-                    iv.put("user_id", item.getString("user_id"));
+                    iv.put("user_uid", item.getInt("user_uid"));
+                    iv.put("item_rating", item.getInt("item_rating"));
                     iv.put("last_updated", item.getString("last_updated"));
                     if (db.insert("item", null, iv) == -1) {
                     	Log.e(TAG, "Error occured while inserting " + i + "th row " + item.toString());
                     	return;
                     } else {
-                    	Log.d(TAG,"Inserted " + iv.get("user_id") + ":" + iv.get("item_name"));
+                    	Log.d(TAG,"Inserted " + iv.get("user_uid") + ":" + iv.get("item_name"));
                     }
                 }
                 useruid = jobj.getString("user_uid");
