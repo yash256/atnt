@@ -37,6 +37,7 @@ import android.widget.Toast;
 public class MarketsDB {
 	private final static String TAG="MarketsDB";
 	protected static SQLiteDatabase db;
+	protected static String user_uid = "0";
 	protected Context context;
 	public MarketsDB(Context ctx){
 		context = ctx;
@@ -103,7 +104,9 @@ public class MarketsDB {
 		} 
 		updateDatabase();
 	}
-	
+	public static String getUserUid() {
+		return user_uid;
+	}
 	public Cursor getMarkets(){
 		Cursor c=db.rawQuery("SELECT rowid _id, * FROM market",null);
 		Log.d("TAG","no of markets="+c.getCount());
@@ -149,23 +152,31 @@ public class MarketsDB {
         @Override
         protected String doInBackground(String... urls) {
         	String lastupdate = new Timestamp(0).toString();
+        	String user_uid = "0";
         	try {
 				FileInputStream fis = context.openFileInput("lastupdate");
 				InputStreamReader isr = new InputStreamReader(fis);
 				BufferedReader reader = new BufferedReader(isr);
                 lastupdate = reader.readLine();
+                user_uid = reader.readLine();
             } catch (FileNotFoundException e1) {
 				Log.e(TAG,"lastupdate not found" + e1);
 			} catch (IOException e) {
 				Log.e(TAG,"lastupdate IOException" + e);
 				}
+        	if (user_uid == null || user_uid.equals("")) {
+        		user_uid = "0";
+        	}
         	JSONObject jsonobj = new JSONObject();
             try {
+            	
+            	jsonobj.put("user_uid", user_uid);
                 jsonobj.put("lastupdate", lastupdate);
             } catch (JSONException e) {
 
                 e.printStackTrace();
             }
+            Log.d(TAG, jsonobj.toString() + "HERE JsonObject");
 
             sendPostData(urls[0],jsonobj);
             return null;
@@ -176,9 +187,10 @@ public class MarketsDB {
             Toast.makeText(context, "Data Sent!", Toast.LENGTH_LONG).show();
        }
     }
-
+    
   public void sendPostData(String url, JSONObject jsonobj)
   {
+	  String useruid = "";
 
         try {
 
@@ -245,12 +257,15 @@ public class MarketsDB {
                     	Log.d(TAG,"Inserted " + iv.get("user_id") + ":" + iv.get("item_name"));
                     }
                 }
+                useruid = jobj.getString("user_uid");
             } catch (JSONException e) {
                 Log.d(TAG,"JSONEx" + e);
             }
             OutputStreamWriter osw = new OutputStreamWriter(context.openFileOutput("lastupdate",  Context.MODE_PRIVATE));
 			Timestamp lastupdate = new Timestamp((Calendar.getInstance()).getTime().getTime());
-    		osw.write(lastupdate.toString());
+    		osw.write(lastupdate.toString() + "\n");
+    		osw.write(useruid);
+    		user_uid = useruid;
     		osw.close();
     		Log.d(TAG,"Last updated" + lastupdate.toString());
         } catch (ClientProtocolException e) {
