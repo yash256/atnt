@@ -28,6 +28,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -238,7 +239,7 @@ public class MarketsDB {
                     rv.put("rating", review.getInt("rating"));
                     rv.put("review_text", review.getString("review_text"));
                     rv.put("review_date", review.getString("review_date"));
-                    if (db.insert("review", null, rv) == -1) {
+                    if (db.insertWithOnConflict("review", null, rv, SQLiteDatabase.CONFLICT_REPLACE) == -1) {
                     	Log.e(TAG, "Error occured while inserting " + i + "th row "+ review.toString());
                     	return;
                     } else {
@@ -259,11 +260,15 @@ public class MarketsDB {
                     iv.put("user_uid", item.getInt("user_uid"));
                     iv.put("item_rating", item.getInt("item_rating"));
                     iv.put("last_updated", item.getString("last_updated"));
-                    if (db.insert("item", null, iv) == -1) {
-                    	Log.e(TAG, "Error occured while inserting " + i + "th row " + item.toString());
-                    	return;
-                    } else {
-                    	Log.d(TAG,"Inserted " + iv.get("user_uid") + ":" + iv.get("item_name"));
+                    try {
+	                    if (db.insertWithOnConflict("item", null, iv, SQLiteDatabase.CONFLICT_REPLACE) == -1) {
+	                    	Log.e(TAG, "Error occured while inserting " + i + "th row " + item.toString());
+	                    	return;
+	                    } else {
+	                    	Log.d(TAG,"Inserted " + iv.get("user_uid") + ":" + iv.get("item_name"));
+	                    }
+                    } catch (SQLiteConstraintException e) {
+                    	
                     }
                 }
                 useruid = jobj.getString("user_uid");
