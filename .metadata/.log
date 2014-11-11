@@ -6170,3 +6170,20 @@ java.lang.NullPointerException
 
 !ENTRY com.android.ide.eclipse.adt 1 0 2014-11-10 21:07:26.202
 !MESSAGE com.android.ide.eclipse.adt
+
+!ENTRY org.eclipse.jdt.ui 4 10001 2014-11-10 21:35:31.399
+!MESSAGE Internal Error
+!STACK 1
+Java Model Exception: Java Model Status [Timed out while retrieving the attached javadoc for View [in View.class [in android.view [in /home/yash/adt-bundle-linux-x86_64-20140702/sdk/platforms/android-19/android.jar]]] ]
+	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:808)
+	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1037)
+	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:639)
+	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:463)
+	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:95)
+	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:75)
+	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:58)
+	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:555)
+	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+!SUBENTRY 1 org.eclipse.jdt.core 4 1012 2014-11-10 21:35:31.400
+!MESSAGE Timed out while retrieving the attached javadoc for View [in View.class [in android.view [in /home/yash/adt-bundle-linux-x86_64-20140702/sdk/platforms/android-19/android.jar]]] 

@@ -67,11 +67,22 @@ public class Details extends ListActivity {
 		marketInfo.moveToFirst();
 		final String market_name=marketInfo.getString(marketInfo.getColumnIndex("Name"));
 		String market_address=marketInfo.getString(marketInfo.getColumnIndex("address"));
+		int day=marketInfo.getInt(marketInfo.getColumnIndex("day_of_operation"));
+		String dayStr=MarketsDB.getDay(day);
+		String from_time=marketInfo.getString(marketInfo.getColumnIndex("from_time"));
+		String to_time=marketInfo.getString(marketInfo.getColumnIndex("to_time"));
+		String from_date=marketInfo.getString(marketInfo.getColumnIndex("from_date"));
+		String to_date=marketInfo.getString(marketInfo.getColumnIndex("to_date"));
 		setContentView(R.layout.market_details);
 		TextView marketNameTV=(TextView) findViewById(R.id.market_name);
 		TextView marketAddressTV=(TextView) findViewById(R.id.market_address);
+		TextView timing=(TextView) findViewById(R.id.market_timing);
+		TextView fromto=(TextView) findViewById(R.id.from_to);
+		
 		marketNameTV.setText(market_name);
 		marketAddressTV.setText(market_address);
+		timing.setText(dayStr+", "+from_time+" to "+to_time);
+		fromto.setText(from_date+" to "+to_date);
 		RatingBar rating=(RatingBar) findViewById(R.id.ratingBar1);
 		double avgRating=MarketsDB.getRatingByMarketID(marketID);
 		Log.d("DETAILS","avgratng of marketid "+marketID+" = "+avgRating);

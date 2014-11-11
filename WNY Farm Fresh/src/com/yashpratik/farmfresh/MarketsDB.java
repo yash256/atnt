@@ -111,6 +111,16 @@ public class MarketsDB {
 	public static String getUserUid() {
 		return user_uid;
 	}
+	
+	public static String getDay(int day){
+		Log.d(TAG,"day of operation" + day);
+		Cursor c=db.rawQuery("SELECT day_name AS day_name from day_of_week where day_id="+day+";", null);
+		c.moveToFirst();
+		Log.d(TAG,"Count of daycursor " + c.getCount());
+		String dayStr=c.getString(c.getColumnIndex("day_name"));
+		Log.d(TAG, dayStr);
+		return dayStr;
+	}
 	public Cursor getMarkets(){
 		Cursor c= db.rawQuery("SELECT rowid _id, * FROM market",null);
 		String cols[]={"_id", "Name","address","market_id", "distance"};
@@ -137,7 +147,7 @@ public class MarketsDB {
 	}
 	
 	public static Cursor getMarketByID(int id){
-		Cursor c=db.rawQuery("SELECT Name, address from market where market_id=" + id + ";",null);
+		Cursor c=db.rawQuery("SELECT * from market where market_id=" + id + ";",null);
 		return c;
 	}
 	

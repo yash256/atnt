@@ -27,8 +27,8 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080019;
-        public static final int add_review=0x7f080018;
+        public static final int action_settings=0x7f08001b;
+        public static final int add_review=0x7f08001a;
         public static final int address=0x7f080001;
         public static final int button1=0x7f08000a;
         public static final int cancel_review=0x7f08000e;
@@ -36,19 +36,21 @@ public final class R {
         public static final int editText1=0x7f080005;
         public static final int editText2=0x7f080007;
         public static final int editText3=0x7f080009;
+        public static final int from_to=0x7f080015;
         public static final int gridLayout1=0x7f080012;
         public static final int marketID=0x7f080003;
         public static final int market_address=0x7f080013;
         public static final int market_name=0x7f080004;
+        public static final int market_timing=0x7f080014;
         public static final int marketname=0x7f080000;
         public static final int ok_review=0x7f08000f;
-        public static final int ratingBar1=0x7f080014;
+        public static final int ratingBar1=0x7f080016;
         public static final int review_text=0x7f08000c;
-        public static final int reviews_header=0x7f080017;
+        public static final int reviews_header=0x7f080019;
         public static final int textView2=0x7f080006;
         public static final int textView3=0x7f080008;
-        public static final int top_items=0x7f080016;
-        public static final int top_items_header=0x7f080015;
+        public static final int top_items=0x7f080018;
+        public static final int top_items_header=0x7f080017;
         public static final int userRating=0x7f08000d;
         public static final int user_name=0x7f080010;
         public static final int user_text=0x7f080011;
