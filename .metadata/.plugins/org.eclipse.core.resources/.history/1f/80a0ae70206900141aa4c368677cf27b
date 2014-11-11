@@ -1,0 +1,300 @@
+package com.example.farmdroid;
+
+
+import java.io.BufferedReader;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.sql.Timestamp;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.ActionBar.LayoutParams;
+import android.app.Dialog;
+import android.app.ListActivity;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.RadialGradient;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.RatingBar;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class Details extends ListActivity {
+	private final static String TAG="Details";
+
+	int marketID;
+	final Context ctx=this;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+		Bundle intentData=getIntent().getExtras();
+		marketID=intentData.getInt("marketID");
+		SQLiteDatabase tempdb=MarketsDB.db;
+		Cursor marketInfo=MarketsDB.getMarketByID(marketID);
+		marketInfo.moveToFirst();
+		final String market_name=marketInfo.getString(marketInfo.getColumnIndex("Name"));
+		String market_address=marketInfo.getString(marketInfo.getColumnIndex("address"));
+		setContentView(R.layout.market_details);
+		TextView marketNameTV=(TextView) findViewById(R.id.market_name);
+		TextView marketAddressTV=(TextView) findViewById(R.id.market_address);
+		marketNameTV.setText(market_name);
+		marketAddressTV.setText(market_address);
+		RatingBar rating=(RatingBar) findViewById(R.id.ratingBar1);
+		rating.setRating((float) 4.00);		//TODO add actual rating
+		rating.setEnabled(false);
+		Cursor reviews=MarketsDB.getReviews(marketID);
+		@SuppressWarnings("deprecation")
+		ListAdapter adapter=new SimpleCursorAdapter(this, R.layout.listview_reviews, reviews, new String[]{"user_id", "review_text"}, new int[]{R.id.user_name, R.id.user_text});
+		setListAdapter(adapter);
+
+		Cursor items=MarketsDB.getItemsByMarketId(marketID);
+		Log.d("DETAILS","size of cursor in populateItems "+items.getCount());
+		LinearLayout topsItemsLayout = (LinearLayout) findViewById(R.id.top_items);
+		@SuppressWarnings("deprecation")
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
+		if(items.getCount()>0){
+			while(items.moveToNext()){
+
+				String item=items.getString(items.getColumnIndex("item_name"));
+				Log.d("DETAILS","cursor item="+item);
+				int item_count=items.getInt(items.getColumnIndex("item_count"));
+				final Button b =new Button(this);
+				b.setText(item+" "+item_count);
+				b.setLayoutParams(params);
+				b.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						String btnText=(String) b.getText();
+						String data[]=((String) b.getText()).split(" ");
+						String item_name="";
+
+
+						int count=Integer.parseInt(data[data.length-1]);
+						int splitpoint=btnText.indexOf(""+count);
+						item_name=btnText.substring(0,splitpoint-1);
+						/*                	boolean recordexists=MarketsDB.userRecommendedItem(marketID, item_name);
+                	if(recordexists){
+                		MarketsDB.deleteRecommendation(marketID, item_name);
+                	}
+                	else{
+                		MarketsDB.createRecommendation(marketID, item_name);
+                	}
+						 */                		
+						Log.d("DETAILS", "Item_name" + item_name);
+						new HttpAsyncTask().execute("http://72.231.223.67:48000/addItem.php", item_name);
+						Log.d("DETAILS","items,count"+b.getText());
+
+					}
+				});
+				topsItemsLayout.addView(b);
+			}
+		}
+		else{
+			TextView noItems=new TextView(this);
+			noItems.setText("No items to show");
+			topsItemsLayout.addView(noItems);
+		}
+		Button addreview=(Button) findViewById(R.id.add_review);
+		addreview.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				//String username = "";
+				String userid = "";
+				String user_uid = MarketsDB.getUserUid();
+				try {
+					FileInputStream fis = ctx.openFileInput("userDetails.txt");
+					InputStreamReader isr = new InputStreamReader(fis);
+					BufferedReader reader = new BufferedReader(isr);
+					userid = reader.readLine();
+				} catch (FileNotFoundException e) {
+					Log.d(TAG, "Username file not found - input");
+				} catch (IOException e) {
+					Log.d(TAG, "Username IO Exception");
+				}
+
+				if (userid.equals("")) {
+					FileOutputStream fos;
+					try {
+						fos = ctx.openFileOutput("lastupdate", Context.MODE_PRIVATE);
+						OutputStreamWriter osw = new OutputStreamWriter(fos);
+						osw.write(userid);
+						osw.close();
+					} catch (FileNotFoundException e) {
+						Log.d(TAG, "Username file not found - output");
+						e.printStackTrace();
+					} catch (IOException e) {
+						Log.d(TAG, "username ioexception - output");
+						e.printStackTrace();
+					}
+
+				}
+
+				Log.d("Details","add review clicked");
+				final Dialog dialog = new Dialog(ctx);
+				dialog.setContentView(R.layout.dialog);
+
+				dialog.setTitle("Review "+market_name);
+				dialog.show();
+			}
+		});
+		Button ok=(Button) findViewById(R.id.ok_review);
+		Button cancel=(Button) findViewById(R.id.cancel_review);
+		final EditText userid=(EditText) findViewById(R.id.username);
+		final EditText reviewText=(EditText) findViewById(R.id.review_text);
+		final RatingBar userRating=(RatingBar) findViewById(R.id.userRating);
+		ok.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.d("DETAILS",userid.getText()+" "+reviewText.getText()+" "+userRating.getRating());
+
+			}
+		});
+		cancel.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+
+			}
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	/*public void populateItems(Context ctx){
+
+		Cursor items=MarketsDB.getItemsByMarketId(marketID);
+		Log.d("DETAILS","size of cursor in populateItems "+items.getCount());
+		LinearLayout layout = (LinearLayout) findViewById(R.id.top_items);
+        @SuppressWarnings("deprecation")
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT);
+        while(items.moveToNext()){
+
+        	String item=items.getString(items.getColumnIndex("item_name"));
+        	Log.d("DETAILS","cursor item="+item);
+        	int item_count=items.getInt(items.getColumnIndex("item_count"));
+        	TextView b =new TextView(ctx);
+        	b.setLayoutParams(params);
+        	b.setText(item+" "+item_count);
+
+        }
+	}*/
+	private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+		@Override
+		protected String doInBackground(String... urls) {
+			Log.d("DETAILS", "urls[1]" + urls[1]);
+			String item_name = urls[1];
+
+			JSONObject jsonobj = new JSONObject();
+			try {
+				jsonobj.put("market_id", marketID);
+				jsonobj.put("item_name", item_name);
+				jsonobj.put("user_uid", MarketsDB.getUserUid());
+			} catch (JSONException e) {
+
+				e.printStackTrace();
+			}
+			Log.d("DETAILS", "Sending json" + jsonobj.toString());
+			sendPostData(urls[0],jsonobj);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+		}
+	}
+
+	public void sendPostData(String url, JSONObject jsonobj)
+	{
+
+		try {
+
+			String json = jsonobj.toString();
+			StringEntity se = new StringEntity(json);
+
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(url);
+			httppost.setEntity(se);
+			HttpResponse response = httpclient.execute(httppost);
+			HttpEntity entity = response.getEntity();
+			InputStream inputstream = entity.getContent();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+			String line="";
+			StringBuilder sb = new StringBuilder();
+
+			while((line = reader.readLine()) != null)
+			{
+				sb.append(line);
+			}
+
+			String jsonString = sb.toString();
+			Log.d("DETAILS",jsonString);
+			String result = null;
+			try {
+				JSONObject jobj = new JSONObject(jsonString);
+				result = jobj.getString("success");
+				Log.d("RESPONSE", result);
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}

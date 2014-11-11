@@ -1,0 +1,41 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.example.farmdroid.Markets"
+    android:columnCount="8" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/marketname"
+        android:text="@dimen/market_name" 
+        android:textStyle="bold"
+    android:layout_row="0"  
+    android:layout_columnSpan="8"  />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="100dp"
+        android:id="@+id/address" 
+        android:text="@dimen/address_size"
+        android:layout_row="1"
+        android:layout_columnSpan="5" 
+        android:layout_gravity="left"/>
+    
+    <TextView android:id="@+id/distance"
+        android:text="@dimen/address_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_columnSpan="2"
+        android:layout_gravity="right"
+         />
+        <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:id="@+id/marketID" />
+</GridLayout>

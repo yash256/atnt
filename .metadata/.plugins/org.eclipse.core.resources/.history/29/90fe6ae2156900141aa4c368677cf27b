@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:columnCount="8" xmlns:tools="http://schemas.android.com/tools">
+	
+    <TextView
+        android:id="@+id/add_review_header"
+        android:layout_columnSpan="8"
+        android:layout_gravity="center_horizontal"
+        android:layout_row="0"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        tools:ignore="HardcodedText" />
+    
+    <Space
+        android:layout_height="20dp"
+        android:layout_columnSpan="8" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_columnSpan="6"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:text="@string/username_edittext" 
+        android:inputType="textPersonName">
+
+    </EditText>
+    <EditText
+        android:id="@+id/review_text"
+        android:layout_columnSpan="6"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:text="@string/review_text_edittext" 
+        android:inputType="textMultiLine">
+    </EditText>
+    
+    <RatingBar
+        android:id="@+id/ratingBar1"
+        android:layout_columnSpan="8"
+        android:layout_gravity="center_horizontal"
+        />
+
+</GridLayout>

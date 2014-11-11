@@ -1,0 +1,98 @@
+package com.yashpratik.farmfresh;
+ 
+import java.io.BufferedReader;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.os.AsyncTask;
+import android.util.Log;
+ 
+public class Review {
+	
+
+	public void addReview(int marketid, String userid, String review, double rating) {
+		new HttpAsyncTask().execute("http://72.231.223.67:48000/addReview.php", "" + marketid, userid, review, "" + rating);
+
+	}
+      private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+            @Override
+            protected String doInBackground(String... urls) {
+ 
+                JSONObject jsonobj = new JSONObject();
+                String marketid = urls[1];
+                String userid = urls[2];
+                String review = urls[3];
+                String rating = urls[4];
+                try {
+                    jsonobj.put("marketid", marketid);
+                    jsonobj.put("userid", userid);
+                    jsonobj.put("user_uid", MarketsDB.getUserUid());
+                    jsonobj.put("review", review);
+                    jsonobj.put("rating", rating);
+                } catch (JSONException e) {
+ 
+                    e.printStackTrace();
+                }
+ 
+                sendPostData(urls[0],jsonobj);
+                return null;
+            }
+ 
+        }
+ 
+      public void sendPostData(String url, JSONObject jsonobj)
+      {
+ 
+            try {
+ 
+                String json = jsonobj.toString();
+                StringEntity se = new StringEntity(json);
+ 
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(url);
+                httppost.setEntity(se);
+                HttpResponse response = httpclient.execute(httppost);
+                HttpEntity entity = response.getEntity();
+                InputStream inputstream = entity.getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+                String line="";
+                StringBuilder sb = new StringBuilder();
+ 
+                while((line = reader.readLine()) != null)
+                {
+                    sb.append(line);
+                }
+ 
+                String jsonString = sb.toString();
+                Log.d("jsonstring",jsonString);
+                String result = null;
+                try {
+                    JSONObject jobj = new JSONObject(jsonString);
+                    result = jobj.getString("success");
+                    Log.d("RESPONSE", result);
+ 
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+ 
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+ 
+      }
+ 
+}

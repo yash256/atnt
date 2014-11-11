@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Farmdroid</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="username">username</string>
+    <string name="rating">Rating</string>
+    <string name="review_text">review text</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="top_items_header_text">Best known for</string>
+    <string name="reviews_header">Reviews</string>
+	<string name="username_edittext">Enter username</string>
+</resources>

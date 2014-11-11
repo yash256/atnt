@@ -1,0 +1,29 @@
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.farmdroid.Markets">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+     >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/marketname"
+        android:text="@dimen/market_name" 
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/address" 
+        android:text="@dimen/address_size"/>
+    
+        <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:id="@+id/marketID" />
+</LinearLayout>
+</ScrollView>

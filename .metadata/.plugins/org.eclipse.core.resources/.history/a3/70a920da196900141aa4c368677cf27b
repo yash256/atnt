@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:columnCount="8" xmlns:tools="http://schemas.android.com/tools">
+	
+    
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_columnSpan="6"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:text="@string/username_edittext" 
+        android:inputType="textPersonName">
+
+    </EditText>
+    <EditText
+        android:id="@+id/review_text"
+        android:layout_columnSpan="6"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:text="@string/review_text_edittext" 
+        android:inputType="textMultiLine">
+    </EditText>
+    
+    <RatingBar
+        android:id="@+id/ratingBar1"
+        android:layout_columnSpan="8"
+        android:layout_gravity="center_horizontal"
+        />
+    <Button 
+        android:id="@+id/cancel_review"
+        android:text="@string/cancel"
+		android:layout_columnSpan="4"
+        android:layout_gravity="center_horizontal" />
+    <Button 
+        android:id="@+id/ok_review"
+        android:text="@string/ok"  
+        android:layout_columnSpan="4"
+        android:layout_gravity="center_horizontal" />
+
+</GridLayout>
